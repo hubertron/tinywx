@@ -5,16 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="Description" content="A tiny little webapp that lets you get crucial weather beta when you have just a tiny bit of cell service. Perfect for hikers, climbers and other outdoor enthusiasts that need weather info on the go.">
-
+  <meta name="Description"
+    content="A tiny little webapp that lets you get crucial weather beta when you have just a tiny bit of cell service. Perfect for hikers, climbers and other outdoor enthusiasts that need weather info on the go.">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <title>Tiny Weather | Get the current forecast at your location in low bandwidth situations</title>
   <style>
     body {
       font-size: 16px;
     }
+
     h1 {
       margin: 0;
     }
+
     h2 {
       font-size: 20px;
       margin: 0 0 10px 0;
@@ -43,8 +49,10 @@
 </head>
 
 <body>
-  <h1>Tiny Weather</h1><h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
-  <a href="#">About</a> this project | <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif" target="_blank">View</a> nationwide radar loop ~400KB
+  <h1>Tiny Weather</h1>
+  <h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
+  <a href="#">About</a> this project | <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif"
+    target="_blank">View</a> nationwide radar loop ~400KB
 
   <p id="status"></p>
   <div id="forecast"></div>
