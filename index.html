@@ -106,11 +106,11 @@
       }
 
       function error() {
-        status.textContent = 'Unable to retrieve your location';
+        status.textContent = 'Unable to retrieve your location, you must have location services turned on in order go quickly access weather information. We do not store your location whatsoever.';
       }
 
       if (!navigator.geolocation) {
-        status.textContent = 'Geolocation is not supported by your browser';
+        status.textContent = 'Geolocation is not supported by your browser, unfortuantly you wil not be able to use this website.';
       } else {
         status.textContent = 'Locating…';
         navigator.geolocation.getCurrentPosition(success, error);
