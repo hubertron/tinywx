@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="Description" content="A tiny little webapp that lets you get crucial weather beta when you have just a tiny bit of cell service. Perfect for hikers, climbers and other outdoor enthusiasts that need weather info on the go.">
+
   <title>Tiny Weather | Get the current forecast at your location in low bandwidth situations</title>
   <style>
     body {
@@ -36,13 +39,12 @@
     th {
       padding: 5px;
     }
-
   </style>
 </head>
 
 <body>
   <h1>Tiny Weather</h1><h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
-  <a href="#">About</a> this project
+  <a href="#">About</a> this project | <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif" target="_blank">View</a> nationwide radar loop ~400KB
 
   <p id="status"></p>
   <div id="forecast"></div>
@@ -106,11 +108,11 @@
       }
 
       function error() {
-        status.textContent = 'Unable to retrieve your location, you must have location services turned on in order go quickly access weather information. We do not store your location whatsoever.';
+        status.innerHTML = '<span style="color:red;font-size:20px;">Unable to retrieve your location, you must have location services turned on in order to quickly access weather information. We do not store your location whatsoever.</span>';
       }
 
       if (!navigator.geolocation) {
-        status.textContent = 'Geolocation is not supported by your browser, unfortuantly you wil not be able to use this website.';
+        status.innerHTML = '<span style="color:red">Geolocation is not supported by your browser, without it you wil not be able to use this website.</span>';
       } else {
         status.textContent = 'Locating…';
         navigator.geolocation.getCurrentPosition(success, error);
