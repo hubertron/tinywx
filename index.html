@@ -17,31 +17,25 @@
       font-size: 16px;
       font-family: sans-serif;
     }
-
     h1 {
       margin: 0;
     }
-
     h2 {
       font-size: 20px;
       margin: 0 0 10px 0;
       font-weight: normal;
     }
-
     #name {
       clear: both;
       font-weight: bold;
       padding-top: 20px;
     }
-
     #hourlyBlock {
       margin: 20 auto;
     }
-
     table {
       border-collapse: collapse;
     }
-
     td,
     th {
       padding: 5px;
@@ -50,16 +44,14 @@
 </head>
 
 <body>
-  <h1>Nearby WX</h1>
+  <p id="status"></p>
+  <h1>Nearby Weather</h1>
   <h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
   <a href="#">About</a> this project | <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif"
     target="_blank">View</a> nationwide radar loop ~400KB
 
-  <p id="status"></p>
+  
   <div id="forecast"></div>
-  <div id="hourlyBlock">
-    <div id="hourly"></div>
-  </div>
   <br><br>
   <table border="1" id="currentTable">
     <tr>
@@ -68,13 +60,11 @@
       <th>Wind</th>
       <th>Skies</th>
     </tr>
-
   </table>
 
   <script>
     const status = document.querySelector('#status');
     const forecast = document.querySelector('#forecast');
-    const hourly = document.querySelector('#hourly');
     const table = document.querySelector('#currentTable');
 
     function printScreen(data) {
@@ -87,12 +77,12 @@
 
     function printHourly(data) {
       var i;
-
       for (i = 0; i < 12; i++) {
         table.innerHTML += `<tr><td>${i + 1}</td><td>${data.periods[i].temperature} °${data.periods[i].temperatureUnit}</td><td>${data.periods[i].windDirection} ${data.periods[i].windSpeed}</td><td>${data.periods[i].shortForecast}</td></tr>`
 
       };
     };
+
 
     function geoFindMe() {
       forecast.textContent = '';
@@ -103,17 +93,17 @@
 
         status.textContent = '';
 
-        fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
-          .then(response => response.json())
-          .then(data => fetch(data.properties.forecast))
-          .then(response => response.json())
-          .then(data => printScreen(data.properties))
+      fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
+        .then(response => response.json())
+        .then((data) => {
+            fetch(data.properties.forecast)
+            .then(response => response.json())
+            .then(data => printScreen(data.properties));
 
-        fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
-          .then(response => response.json())
-          .then(data => fetch(data.properties.forecastHourly))
-          .then(response => response.json())
-          .then(data => printHourly(data.properties));
+            fetch(data.properties.forecastHourly)
+            .then(response => response.json())
+            .then(data => printHourly(data.properties));
+          })
       }
 
       function error() {
@@ -126,11 +116,8 @@
         status.textContent = 'Locating…';
         navigator.geolocation.getCurrentPosition(success, error);
       }
-
     }
-
     geoFindMe();
   </script>
 </body>
-
 </html>
