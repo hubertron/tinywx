@@ -40,8 +40,8 @@
     th {
       padding: 5px;
     }
-    #emergencyInfo {
-      padding-top: 20px;
+    #discussion {
+      padding: 20px 0;
     }
   </style>
 </head>
@@ -50,40 +50,45 @@
   <p id="status"></p>
   <h1>Nearby Weather</h1>
   <h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
-  <a href="#">About</a> this project | <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif"
-    target="_blank">View</a> nationwide radar loop ~400KB
-
+ <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif"
+    target="_blank">View</a> US mainland radar loop ~400KB | <a href="https://radar.weather.gov/Conus/Loop/alaskaLoop.gif">View</a> Alaska Loop | <a href="https://radar.weather.gov/Conus/Loop/hawaiiLoop.gif">View</a> Hawaii Loop
+    <br><a href="#">About</a> this project.
   
   <div id="forecast"></div>
   <br><br>
   <table border="1" id="currentTable">
     <tr>
-      <th>Hour</th>
+      <th>Future Hour</th>
       <th>Temp</th>
       <th>Wind</th>
       <th>Skies</th>
     </tr>
   </table>
+  <div id="discussion"></div>
   <div id="emergencyInfo"></div>
+
 
   <script>
     const status = document.querySelector('#status');
     const forecast = document.querySelector('#forecast');
     const table = document.querySelector('#currentTable');
+    const discussion = document.querySelector('#discussion');
     const emergency = document.querySelector('#emergencyInfo');
+    
 
     function printScreen(data) {
       var i;
       for (i = 0; i < 3; i++) {
         forecast.innerHTML += `<div id="name">${data.periods[i].name}</div>`;
         forecast.innerHTML += `<div id="mainForecast">${data.periods[i].detailedForecast}</div>`;
+        
       };
     };
 
     function printHourly(data) {
       var i;
       for (i = 0; i < 12; i++) {
-        table.innerHTML += `<tr><td>${i + 1}</td><td>${data.periods[i].temperature} °${data.periods[i].temperatureUnit}</td><td>${data.periods[i].windDirection} ${data.periods[i].windSpeed}</td><td>${data.periods[i].shortForecast}</td></tr>`
+        table.innerHTML += `<tr><td>${i}</td><td>${data.periods[i].temperature} °${data.periods[i].temperatureUnit}</td><td>${data.periods[i].windDirection} ${data.periods[i].windSpeed}</td><td>${data.periods[i].shortForecast}</td></tr>`
 
       };
     };
@@ -99,7 +104,8 @@
 
         status.textContent = '';
 
-      fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
+      //fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
+      fetch('https://api.weather.gov/points/37.7714,-101.0369')
         .then(response => response.json())
         .then((data) => {
             fetch(data.properties.forecast)
@@ -109,9 +115,13 @@
             fetch(data.properties.forecastHourly)
             .then(response => response.json())
             .then(data => printHourly(data.properties));
-          })
 
+            discussion.innerHTML += `<a href="https://forecast.weather.gov/product.php?site=${data.properties.gridId}&issuedby=${data.properties.gridId}&product=AFD&format=txt&version=1&glossary=1">View</a> detailed weather discussion for this area.`;
+
+            console.log(data.properties.gridId)
+          })
           emergency.innerHTML = `Click <a href="tel:911">here</a> to contact 911 with this info: <br> Lat: <em>${latitude}</em> <br> Long: <em>${longitude}</em> <br> Accuracy: <em>${accuracy} meters</em>.`
+      
       }
       
       
