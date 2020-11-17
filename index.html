@@ -17,34 +17,42 @@
       font-size: 17px;
       font-family: sans-serif;
     }
+
     button {
       background-color: blue;
       color: #fff;
       padding: 10px;
     }
+
     h1 {
       margin: 0;
     }
+
     h2 {
       font-size: 20px;
       margin: 0 0 10px 0;
       font-weight: normal;
     }
+
     #name {
       clear: both;
       font-weight: bold;
       padding-top: 20px;
     }
+
     #hourlyBlock {
       margin: 20 auto;
     }
+
     table {
       border-collapse: collapse;
     }
+
     td,
     th {
       padding: 5px;
     }
+
     #discussion {
       padding: 20px 0;
     }
@@ -56,10 +64,11 @@
   <p id="status"></p>
   <h1>Nearby Weather</h1>
   <h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
- <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif"
-    target="_blank">View</a> US mainland radar loop ~400KB | <a href="https://radar.weather.gov/Conus/Loop/alaskaLoop.gif">View</a> Alaska Loop | <a href="https://radar.weather.gov/Conus/Loop/hawaiiLoop.gif">View</a> Hawaii Loop
-    <br><a href="#">About</a> this project.
-  
+  <a href="https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif" target="_blank">View</a> US mainland radar loop
+  ~400KB | <a href="https://radar.weather.gov/Conus/Loop/alaskaLoop.gif">View</a> Alaska Loop | <a
+    href="https://radar.weather.gov/Conus/Loop/hawaiiLoop.gif">View</a> Hawaii Loop
+  <br><a href="#">About</a> this project.
+
   <div id="forecast"></div>
   <br><br>
   <table border="1" id="currentTable">
@@ -80,14 +89,14 @@
     const table = document.querySelector('#currentTable');
     const discussion = document.querySelector('#discussion');
     const emergency = document.querySelector('#emergencyInfo');
-    
+
 
     function printScreen(data) {
       var i;
       for (i = 0; i < 3; i++) {
         forecast.innerHTML += `<div id="name">${data.periods[i].name}</div>`;
         forecast.innerHTML += `<div id="mainForecast">${data.periods[i].detailedForecast}</div>`;
-        
+
       };
     };
 
@@ -99,6 +108,14 @@
       };
     };
 
+    function CheckError(response) {
+      if (response.status >= 200 && response.status <= 299) {
+        return response;
+      } else {
+        throw Error(response.statusText);
+        console.log(response.status, response.statusText);
+      }
+    }
 
     function geoFindMe() {
       forecast.textContent = '';
@@ -110,27 +127,36 @@
 
         status.textContent = '';
 
-      fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
-      //fetch('https://api.weather.gov/points/37.7714,-101.0369')
-        .then(response => response.json())
-        .then((data) => {
+        fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
+          //fetch('https://api.weather.gov/points/37.7714,-101.0369')
+          .then(CheckError)
+          .then(response => response.json())
+          .then((data) => {
             fetch(data.properties.forecast)
-            .then(response => response.json())
-            .then(data => printScreen(data.properties));
+              .then(response => response.json())
+              .then(data => printScreen(data.properties));
 
             fetch(data.properties.forecastHourly)
-            .then(response => response.json())
-            .then(data => printHourly(data.properties));
+              .then(CheckError)
+              .then(response => response.json())
+              .then(data => printHourly(data.properties))
+              .catch((error) => {
+                console.log(error);
+                status.innerHTML = '<span style="color:red;font-size:20px;">Error getting data from NOAA. Please refresh and try again.</span>';
+              })
+              .catch((error) => {
+                console.log(error);
+                status.innerHTML = '<span style="color:red;font-size:20px;">Error getting data from NOAA. Please refresh and try again.</span>';
+              });
 
             discussion.innerHTML += `<a href="https://forecast.weather.gov/product.php?site=${data.properties.gridId}&issuedby=${data.properties.gridId}&product=AFD&format=txt&version=1&glossary=1">View</a> detailed weather discussion for this area.`;
 
-            console.log(data.properties.gridId)
           })
-          emergency.innerHTML = `Click <a href="tel:911">here</a> to contact 911 with this info: <br> Lat: <em>${latitude}</em> <br> Long: <em>${longitude}</em> <br> Accuracy: <em>${accuracy} meters</em>.`
-      
+        emergency.innerHTML = `Click <a href="tel:911">here</a> to contact 911 with this info: <br> Lat: <em>${latitude}</em> <br> Long: <em>${longitude}</em> <br> Accuracy: <em>${accuracy} meters</em>.`
+
       }
-      
-      
+
+
       function error() {
         status.innerHTML = '<span style="color:red;font-size:20px;">Unable to retrieve your location, you must have location services turned on in order to quickly access weather information. We do not store your location whatsoever. Please enable location and try again. </span>';
       }
@@ -143,7 +169,8 @@
       }
     }
     geoFindMe();
-    document.querySelector('#find-me').addEventListener('click', geoFindMe);
+
   </script>
 </body>
+
 </html>
