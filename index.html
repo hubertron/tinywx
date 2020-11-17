@@ -17,6 +17,11 @@
       font-size: 17px;
       font-family: sans-serif;
     }
+    button {
+      background-color: blue;
+      color: #fff;
+      padding: 10px;
+    }
     h1 {
       margin: 0;
     }
@@ -47,6 +52,7 @@
 </head>
 
 <body>
+  <!--<button id = "find-me">Get My Weather</button><br/>-->
   <p id="status"></p>
   <h1>Nearby Weather</h1>
   <h2>Low bandwidth weather from NOAA for when you just have one bar of service.</h2>
@@ -104,8 +110,8 @@
 
         status.textContent = '';
 
-      //fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
-      fetch('https://api.weather.gov/points/37.7714,-101.0369')
+      fetch(`https://api.weather.gov/points/${latitude},${longitude}`)
+      //fetch('https://api.weather.gov/points/37.7714,-101.0369')
         .then(response => response.json())
         .then((data) => {
             fetch(data.properties.forecast)
@@ -126,7 +132,7 @@
       
       
       function error() {
-        status.innerHTML = '<span style="color:red;font-size:20px;">Unable to retrieve your location, you must have location services turned on in order to quickly access weather information. We do not store your location whatsoever.</span>';
+        status.innerHTML = '<span style="color:red;font-size:20px;">Unable to retrieve your location, you must have location services turned on in order to quickly access weather information. We do not store your location whatsoever. Please enable location and try again. </span>';
       }
 
       if (!navigator.geolocation) {
@@ -137,6 +143,7 @@
       }
     }
     geoFindMe();
+    document.querySelector('#find-me').addEventListener('click', geoFindMe);
   </script>
 </body>
 </html>
